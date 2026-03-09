@@ -28,18 +28,10 @@ app = FastAPI(title="FinBuddy API", version="2.0")
 
 # CORS — allow localhost for dev and Netlify URL for production.
 # FRONTEND_URL env var is set in Render dashboard after you deploy Netlify.
-import os as _os
-_frontend = _os.getenv("FRONTEND_URL", "*")
-_origins = ["http://localhost:8080", "http://127.0.0.1:8080"]
-if _frontend != "*":
-    _origins.append(_frontend)
-else:
-    _origins = ["*"]  # dev fallback — tighten once Netlify URL is known
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
