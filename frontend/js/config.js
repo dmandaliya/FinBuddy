@@ -9,7 +9,7 @@
 
   // Replace this URL after you deploy to Render.
   // It will look like: https://finbuddy-api.onrender.com
-  const PROD_API = "https://finbuddy-api.onrender.com";
+  const PROD_API = "https://finbuddy-vn4r.onrender.com";
 
   window.API_BASE = isLocal ? "http://127.0.0.1:8001" : PROD_API;
 })();
