@@ -131,27 +131,57 @@ Open `http://localhost:8000`
 
 ## Deployment
 
-### Backend → Render
+### Step 1 — Database → Supabase (free, never expires)
+
+1. Go to [supabase.com](https://supabase.com) → New project
+2. After it's ready: **Project Settings → Database → Connection string → URI**
+3. Copy the URI — it looks like:
+   ```
+   postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
+   ```
+4. Replace `[PASSWORD]` with your Supabase database password
+5. Save this — you'll paste it into Render as `DATABASE_URL`
+
+### Step 2 — Backend → Render (free)
 
 1. Go to [render.com](https://render.com) → New → Blueprint
 2. Connect this GitHub repo — Render auto-reads `render.yaml`
-3. Add environment variables manually (Plaid keys, Anthropic key, JWT secret)
+3. Add these environment variables:
+   - `DATABASE_URL` → your Supabase connection string from Step 1
+   - `PLAID_CLIENT_ID` → from Plaid dashboard
+   - `PLAID_SECRET` → from Plaid dashboard
+   - `ANTHROPIC_API_KEY` → from Anthropic console
+   - `JWT_SECRET` → any long random string
 4. Deploy — you'll get a URL like `https://finbuddy-api.onrender.com`
 
-### Frontend → Netlify
+> **Note:** Free Render services spin down after 15 min of inactivity. The first request after that takes ~30 seconds to wake up. This is fine for demos.
+
+### Step 3 — Frontend → Netlify (free)
 
 1. Go to [netlify.com](https://netlify.com)
 2. Drag and drop the `frontend/` folder
-3. Done — instant shareable URL
+3. Done — you get a shareable URL like `https://finbuddy-xyz.netlify.app`
 
-### After both are deployed
+### Step 4 — Connect frontend to backend
 
 Update `frontend/js/config.js`:
 ```js
 const PROD_API = "https://finbuddy-api.onrender.com"; // your actual Render URL
 ```
 
-Add `FRONTEND_URL=https://your-app.netlify.app` to Render environment variables.
+Push the change:
+```bash
+git add frontend/js/config.js
+git commit -m "Update production API URL"
+git push
+```
+
+Then in Render env vars, add:
+```
+FRONTEND_URL=https://your-app.netlify.app
+```
+
+### Total cost: $0
 
 ---
 
