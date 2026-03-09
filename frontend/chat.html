@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinBuddy — Ask FinBuddy</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">Fin<span>Buddy</span> 💰</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="transactions.html"><span class="icon">📋</span> Transactions</a></li>
+        <li><a href="budget.html"><span class="icon">🎯</span> Budgets</a></li>
+        <li><a href="bank.html"><span class="icon">🏦</span> Bank connect</a></li>
+        <li><a href="chat.html" class="active"><span class="icon">💬</span> Ask FinBuddy</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name" id="sidebar-name">Loading...</div>
+        <div class="user-email" id="sidebar-email"></div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-title">Ask FinBuddy 💬</div>
+      <div class="page-subtitle">
+        Ask about any purchase, your spending habits, or your budget. FinBuddy knows your real financial situation.
+      </div>
+
+      <!-- Example prompts to get people started quickly -->
+      <div class="flex gap-8 mb-16" style="flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="fillPrompt('Should I buy $150 ALDO shoes right now?')">
+          👟 $150 ALDO shoes?
+        </button>
+        <button class="btn btn-outline" onclick="fillPrompt('How much did I spend on food this month?')">
+          🍕 Food spending this month
+        </button>
+        <button class="btn btn-outline" onclick="fillPrompt('Am I on track with my budget?')">
+          🎯 Am I on track?
+        </button>
+        <button class="btn btn-outline" onclick="fillPrompt('Can I afford to go out for dinner tonight ($60)?')">
+          🍽️ Dinner out ($60)?
+        </button>
+        <button class="btn btn-outline" onclick="fillPrompt('What are my biggest expenses this month?')">
+          📊 Biggest expenses
+        </button>
+      </div>
+
+      <!-- Chat window -->
+      <div class="chat-window">
+        <div class="chat-messages" id="chat-messages">
+          <!-- Welcome message — shown before the user types anything -->
+          <div class="chat-bubble bubble-bot">
+            Hey! I'm FinBuddy 👋 I can see your real spending, budgets, and account balances.
+            <br><br>
+            Ask me anything — like <strong>"should I buy X?"</strong> and I'll tell you exactly how it affects your finances, including how many hours of work it would cost you.
+          </div>
+        </div>
+
+        <!-- Input row -->
+        <div class="chat-input-row">
+          <input
+            type="text"
+            id="chat-input"
+            class="form-input"
+            placeholder="Ask something about your money..."
+            onkeydown="if(event.key==='Enter') sendMessage()"
+            autocomplete="off"
+          />
+          <button class="btn btn-primary" id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>

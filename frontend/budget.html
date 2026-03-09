@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinBuddy — Budgets</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">Fin<span>Buddy</span> 💰</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="transactions.html"><span class="icon">📋</span> Transactions</a></li>
+        <li><a href="budget.html" class="active"><span class="icon">🎯</span> Budgets</a></li>
+        <li><a href="bank.html"><span class="icon">🏦</span> Bank connect</a></li>
+        <li><a href="chat.html"><span class="icon">💬</span> Ask FinBuddy</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name" id="sidebar-name">Loading...</div>
+        <div class="user-email" id="sidebar-email"></div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-title">Budgets & Settings</div>
+      <div class="page-subtitle">Set how much you plan to spend per category. Track your bills and income sources.</div>
+
+      <div id="alert-box"></div>
+
+      <div class="two-col">
+
+        <!-- LEFT: Monthly budgets -->
+        <div>
+          <div class="card mb-24">
+            <div class="card-title">Monthly category budgets</div>
+
+            <!-- Add new budget -->
+            <div class="flex gap-8 mb-16" style="align-items:flex-end;">
+              <div class="form-group" style="margin:0; flex:1;">
+                <label class="form-label">Category</label>
+                <select id="new-budget-cat" class="form-input">
+                  <option value="groceries">Groceries</option>
+                  <option value="food">Food & dining</option>
+                  <option value="transport">Transport</option>
+                  <option value="shopping">Shopping</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="housing">Housing</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin:0; flex:1;">
+                <label class="form-label">Monthly limit ($)</label>
+                <input type="number" id="new-budget-amount" class="form-input" placeholder="e.g. 300" min="1" />
+              </div>
+              <button class="btn btn-primary" onclick="addBudget()" style="margin-bottom:0;">Add</button>
+            </div>
+
+            <!-- Existing budgets list -->
+            <div id="budgets-list">
+              <div class="text-muted" style="font-size:14px;">Loading budgets...</div>
+            </div>
+          </div>
+
+          <!-- Bills section -->
+          <div class="card">
+            <div class="card-title">Recurring bills</div>
+            <p class="text-muted mb-16" style="font-size:13px;">
+              FinBuddy uses these to calculate how much money you really have available.
+            </p>
+
+            <div class="flex gap-8 mb-16" style="align-items:flex-end; flex-wrap:wrap;">
+              <div class="form-group" style="margin:0; flex:1; min-width:120px;">
+                <label class="form-label">Bill name</label>
+                <input type="text" id="new-bill-name" class="form-input" placeholder="e.g. Rent" />
+              </div>
+              <div class="form-group" style="margin:0; flex:1; min-width:100px;">
+                <label class="form-label">Amount ($)</label>
+                <input type="number" id="new-bill-amount" class="form-input" placeholder="950" min="1" />
+              </div>
+              <div class="form-group" style="margin:0; flex:1; min-width:90px;">
+                <label class="form-label">Due day</label>
+                <input type="number" id="new-bill-day" class="form-input" placeholder="1-28" min="1" max="28" />
+              </div>
+              <button class="btn btn-primary" onclick="addBill()">Add</button>
+            </div>
+
+            <div id="bills-list">
+              <div class="text-muted" style="font-size:14px;">No bills added yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Income sources -->
+        <div>
+          <div class="card">
+            <div class="card-title">Income sources</div>
+            <p class="text-muted mb-16" style="font-size:13px;">
+              Add your jobs with hourly rates. FinBuddy will translate every purchase into hours of work —
+              so you know exactly what something really costs you.
+            </p>
+
+            <div class="form-group">
+              <label class="form-label">Job / source name</label>
+              <input type="text" id="new-income-name" class="form-input" placeholder='e.g. "Uber" or "Part-time at Shoppers"' />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hourly rate (after expenses)</label>
+              <input type="number" id="new-income-rate" class="form-input" placeholder="e.g. 22.50" step="0.5" min="1" />
+            </div>
+            <button class="btn btn-primary mb-16" onclick="addIncomeSource()">Add income source</button>
+
+            <div id="income-list">
+              <div class="text-muted" style="font-size:14px;">No income sources yet.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/budget.js"></script>
+</body>
+</html>

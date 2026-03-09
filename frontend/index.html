@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinBuddy — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Chart.js for spending visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Sidebar navigation — shared across all pages -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">Fin<span>Buddy</span> 💰</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html" class="active"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="transactions.html"><span class="icon">📋</span> Transactions</a></li>
+        <li><a href="budget.html"><span class="icon">🎯</span> Budgets</a></li>
+        <li><a href="bank.html"><span class="icon">🏦</span> Bank connect</a></li>
+        <li><a href="chat.html"><span class="icon">💬</span> Ask FinBuddy</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name" id="sidebar-name">Loading...</div>
+        <div class="user-email" id="sidebar-email"></div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <div class="page-title">Dashboard</div>
+      <div class="page-subtitle" id="greeting">Welcome back! Here's your financial snapshot.</div>
+
+      <!-- Top metric cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Available balance</div>
+          <div class="metric-value accent" id="metric-balance">—</div>
+          <div class="metric-sub">across all accounts</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Spent this month</div>
+          <div class="metric-value" id="metric-spent">—</div>
+          <div class="metric-sub">last 30 days</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Income this month</div>
+          <div class="metric-value positive" id="metric-income">—</div>
+          <div class="metric-sub">last 30 days</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Net this month</div>
+          <div class="metric-value" id="metric-net">—</div>
+          <div class="metric-sub">income minus spending</div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="two-col mb-24">
+
+        <!-- Spending by category donut -->
+        <div class="card">
+          <div class="card-title">Spending by category</div>
+          <canvas id="chart-category" height="220"></canvas>
+        </div>
+
+        <!-- Budget progress bars -->
+        <div class="card">
+          <div class="card-title">Budget progress this month</div>
+          <div id="budget-bars">
+            <div class="text-muted" style="font-size:14px; padding: 20px 0;">
+              No budgets set yet. <a href="budget.html">Set them up →</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent transactions table -->
+      <div class="card">
+        <div class="flex-between mb-16">
+          <div class="card-title" style="margin-bottom:0">Recent transactions</div>
+          <a href="transactions.html" style="font-size:13px;">View all →</a>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Merchant</th>
+              <th>Category</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="recent-tx-body">
+            <tr><td colspan="4" class="text-muted" style="text-align:center; padding:20px;">
+              Loading transactions...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Quick "ask" shortcut -->
+      <div class="card mt-24" style="background: linear-gradient(135deg, #0d4f47, #1e293b);">
+        <div class="flex-between">
+          <div>
+            <div style="font-size:16px; font-weight:600; margin-bottom:4px;">💬 Want to make a purchase?</div>
+            <div class="text-muted" style="font-size:14px;">Ask FinBuddy "should I buy X?" and get a real answer based on your finances.</div>
+          </div>
+          <a href="chat.html" class="btn btn-primary">Ask now →</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

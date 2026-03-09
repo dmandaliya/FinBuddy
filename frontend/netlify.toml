@@ -1,0 +1,10 @@
+# Netlify config for FinBuddy frontend
+# Drop the /frontend folder into Netlify — this file handles routing.
+
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

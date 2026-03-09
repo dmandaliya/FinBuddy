@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinBuddy — Transactions</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">Fin<span>Buddy</span> 💰</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="transactions.html" class="active"><span class="icon">📋</span> Transactions</a></li>
+        <li><a href="budget.html"><span class="icon">🎯</span> Budgets</a></li>
+        <li><a href="bank.html"><span class="icon">🏦</span> Bank connect</a></li>
+        <li><a href="chat.html"><span class="icon">💬</span> Ask FinBuddy</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name" id="sidebar-name">Loading...</div>
+        <div class="user-email" id="sidebar-email"></div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-title">Transactions</div>
+      <div class="page-subtitle">All your spending in one place, sorted newest first.</div>
+
+      <!-- Filters row -->
+      <div class="card mb-24">
+        <div class="flex gap-12" style="flex-wrap: wrap; align-items: flex-end;">
+
+          <div class="form-group" style="margin:0; flex:1; min-width:140px;">
+            <label class="form-label">Time range</label>
+            <select id="filter-days" class="form-input" onchange="loadTransactions()">
+              <option value="30">Last 30 days</option>
+              <option value="60">Last 60 days</option>
+              <option value="90" selected>Last 90 days</option>
+              <option value="180">Last 6 months</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin:0; flex:1; min-width:140px;">
+            <label class="form-label">Category</label>
+            <select id="filter-category" class="form-input" onchange="loadTransactions()">
+              <option value="">All categories</option>
+              <option value="food">Food & dining</option>
+              <option value="groceries">Groceries</option>
+              <option value="transport">Transport</option>
+              <option value="shopping">Shopping</option>
+              <option value="entertainment">Entertainment</option>
+              <option value="housing">Housing</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="income">Income</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <button class="btn btn-outline" onclick="loadTransactions()">Refresh</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Transactions table -->
+      <div class="card">
+        <div class="flex-between mb-16">
+          <div class="card-title" style="margin:0">
+            <span id="tx-count">—</span> transactions
+          </div>
+          <div id="tx-total" class="text-muted" style="font-size:14px;"></div>
+        </div>
+
+        <div id="alert-box"></div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Merchant</th>
+              <th>Category</th>
+              <th style="text-align:right">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="tx-body">
+            <tr><td colspan="4" class="text-muted" style="text-align:center; padding:28px;">
+              Loading...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/transactions.js"></script>
+</body>
+</html>

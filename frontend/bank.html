@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinBuddy — Bank Connect</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">Fin<span>Buddy</span> 💰</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="transactions.html"><span class="icon">📋</span> Transactions</a></li>
+        <li><a href="budget.html"><span class="icon">🎯</span> Budgets</a></li>
+        <li><a href="bank.html" class="active"><span class="icon">🏦</span> Bank connect</a></li>
+        <li><a href="chat.html"><span class="icon">💬</span> Ask FinBuddy</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name" id="sidebar-name">Loading...</div>
+        <div class="user-email" id="sidebar-email"></div>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-title">Bank connect</div>
+      <div class="page-subtitle">Link your bank accounts so FinBuddy can see your real transactions.</div>
+
+      <div id="alert-box"></div>
+
+      <div class="two-col">
+
+        <!-- LEFT: Connect accounts -->
+        <div>
+
+          <!-- Sandbox (testing) -->
+          <div class="card mb-24">
+            <div class="card-title">🧪 Sandbox (testing)</div>
+            <p class="text-muted mb-16" style="font-size:14px;">
+              Connect a fake bank account with realistic sample data. Good for testing and demo.
+            </p>
+            <button class="btn btn-primary" id="sandbox-btn" onclick="sandboxConnect()">
+              Connect sandbox bank
+            </button>
+          </div>
+
+          <!-- Real bank via Plaid Link -->
+          <div class="card">
+            <div class="card-title">🏦 Real bank account</div>
+            <p class="text-muted mb-16" style="font-size:14px;">
+              Connect a real account via Plaid. Supports 12,000+ banks including TD, RBC, CIBC, Chase, and more.
+              Your credentials never touch our servers — Plaid handles authentication directly.
+            </p>
+            <button class="btn btn-primary" id="plaid-link-btn" onclick="openPlaidLink()">
+              Connect real bank
+            </button>
+            <p class="text-muted mt-8" style="font-size:12px;">
+              You can connect multiple accounts — just click this button again for each one.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Connected accounts list + sync -->
+        <div>
+          <div class="card">
+            <div class="flex-between mb-16">
+              <div class="card-title" style="margin:0">Connected accounts</div>
+              <button class="btn btn-outline" onclick="syncAll()" id="sync-btn">🔄 Sync all</button>
+            </div>
+
+            <div id="accounts-list">
+              <div class="text-muted" style="font-size:14px; padding:20px 0;">
+                No accounts connected yet.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Plaid Link script — loaded from Plaid CDN -->
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/bank.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+services:
+  # FastAPI backend
+  - type: web
+    name: finbuddy-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finbuddy-db
+          property: connectionString
+      - key: PLAID_CLIENT_ID
+        sync: false
+      - key: PLAID_SECRET
+        sync: false
+      - key: PLAID_ENV
+        value: sandbox
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_HOURS
+        value: "72"
+
+databases:
+  # Free PostgreSQL on Render
+  - name: finbuddy-db
+    databaseName: finbuddy
+    plan: free
