@@ -64,7 +64,7 @@ async function openPlaidLink() {
 
   try {
     // Get a fresh link token from our backend
-    const data = await apiGet("/plaid/create_link_token");
+    const data = await apiPost("/plaid/create_link_token");
     const linkToken = data.link_token;
 
     // Open the Plaid Link modal — Plaid handles all the bank credential flow
