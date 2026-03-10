@@ -168,28 +168,22 @@ def chat(
         if hours_hint:
             hours_hint = f"\n\nFor reference: ${amount:.0f} equals {hours_hint}. Always mention this in your answer."
 
-    system_prompt = f"""You are FinBuddy — a sharp, friendly personal finance assistant.
-Use the user's real data below. Never give generic advice.
+    system_prompt = f"""You are FinBuddy — a sharp personal finance assistant. Use ONLY the user's real data below.
 
-RESPONSE RULES (follow strictly):
-- Be concise. Max 120 words. No long paragraphs.
-- Always use this format for purchase questions:
+STRICT RULES:
+- Max 80 words total. No exceptions.
+- No long paragraphs. No filler words like "Great question!" or "Of course!".
+- Numbers only from their actual data. If data is missing, say so in one line.
 
-**Verdict:** YES / WAIT / NO — one sentence reason.
+For purchase questions, use EXACTLY this format:
+**Verdict:** YES / WAIT / NO — one sentence.
+**Numbers:** Balance $X → after purchase $X{'. Cost: ' + hours_hint.strip() if hours_hint else ''}
+**Bottom line:** One sentence action.
 
-**The numbers:**
-- Balance after bills: $X
-- After this purchase: $X
-- Work hours cost: X hrs of [job] (only if income sources are set)
-
-**Bottom line:** One practical sentence. If NO/WAIT, suggest one specific alternative.
-
-For other questions (spending, budgets, trends): answer in 2-4 short bullet points with real numbers from their data.
-
-Never use tables. Never write long paragraphs. Keep it scannable.
+For other questions: 2-3 bullet points, real numbers only.
 {hours_hint}
 
-USER'S FINANCIAL SNAPSHOT:
+USER DATA:
 {context}"""
 
     # Build message history for multi-turn conversation
@@ -201,7 +195,7 @@ USER'S FINANCIAL SNAPSHOT:
     try:
         response = claude.messages.create(
             model=MODEL,
-            max_tokens=500,
+            max_tokens=250,
             system=system_prompt,
             messages=messages,
         )
