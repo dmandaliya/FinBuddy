@@ -1,125 +1,62 @@
 # FinBuddy — AI Financial Assistant
 
-A full-stack personal finance app that connects real bank accounts, tracks spending, and answers money questions using AI.
+> Ask "Should I buy $150 ALDO shoes?" → Get a verdict, your remaining balance, and how many hours of work it costs.
 
-> "Should I buy those $150 ALDO shoes?" → FinBuddy tells you the verdict, your remaining balance, and how many hours of work it costs.
+**Live app:** https://verdant-seahorse-32c03c.netlify.app
 
 ---
 
-## Features
+## What it does
 
-- **Bank linking** via Plaid (sandbox + real accounts, multiple accounts supported)
-- **AI chat** powered by Claude — asks context-aware questions using your live financial data
-- **Affordability analysis** — translates any purchase into dollar impact + hours of work
-- **Spending dashboard** — categorized spending, monthly trends, Chart.js visualizations
-- **Budget & bills tracker** — set category budgets, track recurring bills
-- **Multi-user** — anyone can sign up and connect their own accounts
-- **JWT auth** with bcrypt password hashing
+- Connect your bank accounts via Plaid
+- Track spending by category with charts
+- Chat with Claude AI about your finances
+- Set budgets and track bills
+- Multi-user — anyone can sign up
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | FastAPI (Python), 21 REST endpoints |
-| Database | PostgreSQL, SQLAlchemy ORM, 7 tables |
-| ETL | 3-pipeline system: ingest → transform → load |
-| AI | Anthropic Claude (`claude-sonnet-4-6`) |
-| Bank Data | Plaid API |
-| Auth | JWT + bcrypt (passlib) |
-| Frontend | Vanilla HTML/CSS/JS, Chart.js |
-| Backend Deploy | Render.com |
-| Frontend Deploy | Netlify |
+- **Backend:** FastAPI (Python), 21 endpoints
+- **Database:** PostgreSQL (Supabase)
+- **ETL:** 3 pipelines — fetch from Plaid → categorize → store
+- **AI:** Claude `claude-sonnet-4-6` with live financial context
+- **Auth:** JWT + bcrypt
+- **Frontend:** HTML/CSS/JS, Chart.js
+- **Deployed:** Render (backend) + Netlify (frontend) + Supabase (DB) — **$0/month**
 
 ---
 
-## Project Structure
+## Run Locally
 
-```
-FinBuddy/
-├── backend/
-│   ├── main.py              # FastAPI app, CORS, router registration
-│   ├── models.py            # 7 SQLAlchemy models (User, Account, Transaction, ...)
-│   ├── database.py          # PostgreSQL connection
-│   ├── requirements.txt
-│   ├── .env.example
-│   ├── etl/
-│   │   ├── ingest.py        # Fetch from Plaid with pagination + retry logic
-│   │   ├── transform.py     # Normalize 15+ Plaid categories → 9 buckets
-│   │   └── load.py          # Upsert to PostgreSQL, deduplicate transactions
-│   └── routes/
-│       ├── auth.py          # Signup, login, JWT
-│       ├── plaid_routes.py  # Bank linking, account sync
-│       ├── transactions.py  # Transaction queries + summary
-│       ├── budget.py        # Budgets, bills, income sources
-│       └── ai.py            # Claude chat with live financial context
-├── frontend/
-│   ├── index.html           # Dashboard
-│   ├── chat.html            # AI chat
-│   ├── bank.html            # Bank linking (Plaid Link)
-│   ├── transactions.html
-│   ├── budget.html
-│   ├── login.html
-│   ├── js/
-│   │   ├── config.js        # Auto-switches API URL (local vs production)
-│   │   ├── api.js
-│   │   ├── auth.js
-│   │   └── ...
-│   ├── css/style.css        # Pastel Garden theme
-│   └── netlify.toml
-├── render.yaml              # Render Blueprint (backend + PostgreSQL)
-└── start.py                 # Local dev launcher
-```
-
----
-
-## Local Setup
-
-### 1. Clone the repo
-
+**1. Clone**
 ```bash
 git clone https://github.com/dmandaliya/FinBuddy.git
 cd FinBuddy
 ```
 
-### 2. Backend
-
+**2. Backend**
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create a `.env` file (copy from `.env.example`):
-
-```env
-DATABASE_URL=postgresql://your_user@localhost:5432/finbuddy
-PLAID_CLIENT_ID=your_plaid_client_id
-PLAID_SECRET=your_plaid_secret
-PLAID_ENV=sandbox
+Create `.env` (copy from `.env.example`) and fill in your keys:
+```
+DATABASE_URL=postgresql://...
+PLAID_CLIENT_ID=...
+PLAID_SECRET=...
 ANTHROPIC_API_KEY=sk-ant-...
-JWT_SECRET=pick-a-long-random-string
-JWT_ALGORITHM=HS256
-JWT_EXPIRE_HOURS=72
-FRONTEND_URL=http://localhost:8000
+JWT_SECRET=any-long-random-string
 ```
-
-Create the database:
-
-```bash
-createdb finbuddy
-```
-
-Start the backend:
 
 ```bash
 uvicorn main:app --reload --port 8001
 ```
 
-### 3. Frontend
-
+**3. Frontend**
 ```bash
 cd frontend
 python3 -m http.server 8000
@@ -129,59 +66,19 @@ Open `http://localhost:8000`
 
 ---
 
-## Deployment
+## Deploy (Free)
 
-### Step 1 — Database → Supabase (free, never expires)
+| Service | Purpose | Cost |
+|---|---|---|
+| [Supabase](https://supabase.com) | PostgreSQL database | Free forever |
+| [Render](https://render.com) | FastAPI backend | Free |
+| [Netlify](https://netlify.com) | Frontend hosting | Free |
 
-1. Go to [supabase.com](https://supabase.com) → New project
-2. After it's ready: **Project Settings → Database → Connection string → URI**
-3. Copy the URI — it looks like:
-   ```
-   postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
-   ```
-4. Replace `[PASSWORD]` with your Supabase database password
-5. Save this — you'll paste it into Render as `DATABASE_URL`
-
-### Step 2 — Backend → Render (free)
-
-1. Go to [render.com](https://render.com) → New → Blueprint
-2. Connect this GitHub repo — Render auto-reads `render.yaml`
-3. Add these environment variables:
-   - `DATABASE_URL` → your Supabase connection string from Step 1
-   - `PLAID_CLIENT_ID` → from Plaid dashboard
-   - `PLAID_SECRET` → from Plaid dashboard
-   - `ANTHROPIC_API_KEY` → from Anthropic console
-   - `JWT_SECRET` → any long random string
-4. Deploy — you'll get a URL like `https://finbuddy-api.onrender.com`
-
-> **Note:** Free Render services spin down after 15 min of inactivity. The first request after that takes ~30 seconds to wake up. This is fine for demos.
-
-### Step 3 — Frontend → Netlify (free)
-
-1. Go to [netlify.com](https://netlify.com)
-2. Drag and drop the `frontend/` folder
-3. Done — you get a shareable URL like `https://finbuddy-xyz.netlify.app`
-
-### Step 4 — Connect frontend to backend
-
-Update `frontend/js/config.js`:
-```js
-const PROD_API = "https://finbuddy-api.onrender.com"; // your actual Render URL
-```
-
-Push the change:
-```bash
-git add frontend/js/config.js
-git commit -m "Update production API URL"
-git push
-```
-
-Then in Render env vars, add:
-```
-FRONTEND_URL=https://your-app.netlify.app
-```
-
-### Total cost: $0
+**Steps:**
+1. Create Supabase project → copy Session Pooler connection string → use as `DATABASE_URL`
+2. Deploy backend on Render → set root directory to `backend` → add env vars
+3. Deploy frontend on Netlify → set publish directory to `frontend`
+4. Update `frontend/js/config.js` with your Render URL → push to GitHub
 
 ---
 
@@ -190,18 +87,18 @@ FRONTEND_URL=https://your-app.netlify.app
 | Method | Route | Description |
 |---|---|---|
 | POST | `/auth/signup` | Create account |
-| POST | `/auth/login` | Get JWT token |
+| POST | `/auth/login` | Login |
 | GET | `/auth/me` | Current user |
-| POST | `/plaid/create_link_token` | Start Plaid flow |
+| POST | `/plaid/create_link_token` | Start bank linking |
 | POST | `/plaid/exchange_public_token` | Save bank connection |
 | GET | `/plaid/accounts` | List linked accounts |
-| POST | `/plaid/sync` | Pull latest transactions |
-| GET | `/api/transactions` | Paginated transactions |
+| POST | `/plaid/sync` | Fetch latest transactions |
+| GET | `/api/transactions` | All transactions |
 | GET | `/api/transactions/summary` | Spending by category |
 | GET | `/api/transactions/recent` | Last 10 transactions |
-| GET/POST | `/api/budgets` | Budget CRUD |
-| GET/POST | `/api/bills` | Bills CRUD |
-| GET/POST | `/api/income` | Income sources CRUD |
+| GET/POST | `/api/budgets` | Budgets |
+| GET/POST | `/api/bills` | Bills |
+| GET/POST | `/api/income` | Income sources |
 | POST | `/ai/chat` | AI financial assistant |
 
 ---
@@ -210,28 +107,9 @@ FRONTEND_URL=https://your-app.netlify.app
 
 | Variable | Description |
 |---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
+| `DATABASE_URL` | Supabase PostgreSQL connection string |
 | `PLAID_CLIENT_ID` | From [dashboard.plaid.com](https://dashboard.plaid.com) |
 | `PLAID_SECRET` | Plaid sandbox or development secret |
 | `PLAID_ENV` | `sandbox` or `development` |
 | `ANTHROPIC_API_KEY` | From [console.anthropic.com](https://console.anthropic.com) |
 | `JWT_SECRET` | Any long random string |
-| `JWT_EXPIRE_HOURS` | Token expiry (default: 72) |
-| `FRONTEND_URL` | Your Netlify URL (for CORS) |
-
----
-
-## Real Bank Connections
-
-The app is configured for Plaid **sandbox** by default (test accounts, no real data).
-
-To connect real bank accounts:
-1. Apply for Plaid **Development** access at [dashboard.plaid.com](https://dashboard.plaid.com)
-2. Set `PLAID_ENV=development` and use your development secret
-3. Users can then link real Chase, Bank of America, Wells Fargo, etc. accounts
-
----
-
-## License
-
-MIT
