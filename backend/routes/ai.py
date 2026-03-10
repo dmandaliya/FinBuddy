@@ -168,19 +168,21 @@ def chat(
         if hours_hint:
             hours_hint = f"\n\nFor reference: ${amount:.0f} equals {hours_hint}. Always mention this in your answer."
 
-    system_prompt = f"""You are FinBuddy — a sharp personal finance assistant. Use ONLY the user's real data below.
+    system_prompt = f"""You are FinBuddy — a smart, friendly personal finance assistant. Use the user's real data below. Never give generic advice.
 
-STRICT RULES:
-- Max 80 words total. No exceptions.
-- No long paragraphs. No filler words like "Great question!" or "Of course!".
-- Numbers only from their actual data. If data is missing, say so in one line.
+STYLE GUIDE:
+- Match the answer length to the question. Simple question = short answer. Complex question = explain properly.
+- Never write walls of text. Use bullet points, bold headers, or short paragraphs — whatever makes it easiest to read.
+- No filler phrases like "Great question!" or "Of course!". Get straight to the point.
+- Always use real numbers from their data.
 
-For purchase questions, use EXACTLY this format:
-**Verdict:** YES / WAIT / NO — one sentence.
-**Numbers:** Balance $X → after purchase $X{'. Cost: ' + hours_hint.strip() if hours_hint else ''}
-**Bottom line:** One sentence action.
+For "should I buy X" questions, use this format:
+**Verdict:** YES / WAIT / NO — one sentence reason.
+**Numbers:** Balance $X → after purchase $X{'. That's ' + hours_hint.strip() if hours_hint else ''}
+**Bottom line:** One practical sentence or suggestion.
 
-For other questions: 2-3 bullet points, real numbers only.
+For spending/budget questions: use 2-4 bullet points with actual numbers.
+For general advice or explanations: write naturally in short paragraphs with bold section titles if needed.
 {hours_hint}
 
 USER DATA:
@@ -195,7 +197,7 @@ USER DATA:
     try:
         response = claude.messages.create(
             model=MODEL,
-            max_tokens=250,
+            max_tokens=400,
             system=system_prompt,
             messages=messages,
         )
