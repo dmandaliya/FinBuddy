@@ -10,7 +10,7 @@
 
 - Connect your bank accounts via Plaid
 - Track spending by category with charts
-- Chat with Claude AI about your finances
+- Chat with AI about your finances
 - Set budgets and track bills
 - Multi-user — anyone can sign up
 
@@ -21,7 +21,7 @@
 - **Backend:** FastAPI (Python), 21 endpoints
 - **Database:** PostgreSQL (Supabase)
 - **ETL:** 3 pipelines — fetch from Plaid → categorize → store
-- **AI:** Claude `claude-sonnet-4-6` with live financial context
+- **AI:** Anthropic API with live financial context
 - **Auth:** JWT + bcrypt
 - **Frontend:** HTML/CSS/JS, Chart.js
 - **Deployed:** Render (backend) + Netlify (frontend) + Supabase (DB) — **$0/month**

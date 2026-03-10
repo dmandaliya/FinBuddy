@@ -1,10 +1,10 @@
 // chat.js — powers the AI chat page
-// Sends messages to Claude via the backend, maintains conversation history
+// Sends messages to AI via the backend, maintains conversation history
 
 requireAuth();
 loadSidebarUser();
 
-// Keep conversation history in memory so Claude has context across messages
+// Keep conversation history in memory so AI has context across messages
 let history = [];
 
 function fillPrompt(text) {
@@ -34,7 +34,7 @@ async function sendMessage() {
     // Remove typing indicator
     removeTyping(typingId);
 
-    // Show Claude's response
+    // Show AI's response
     appendBubble(data.reply, "bot");
 
     // Add both sides to history for multi-turn context
