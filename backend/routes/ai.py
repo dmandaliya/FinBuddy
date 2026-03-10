@@ -99,22 +99,26 @@ def build_financial_context(db: Session, user: User) -> str:
         f"{t.date} {t.merchant_name or t.name} ${t.amount:.2f}" for t in recent
     ) if recent else "no recent transactions"
 
+    # Budget remaining per category
+    budget_remaining_lines = []
+    for b in budgets:
+        spent = by_cat.get(b.category, 0.0)
+        remaining = b.monthly_limit - spent
+        status = "over budget" if remaining < 0 else f"${remaining:.0f} left"
+        budget_remaining_lines.append(f"{b.category}: spent ${spent:.0f} of ${b.monthly_limit:.0f} ({status})")
+    budget_remaining_str = "\n".join(budget_remaining_lines) if budget_remaining_lines else "no budgets set"
+
     return f"""
 USER: {user.name}
 TODAY: {today.isoformat()}
 
-ACCOUNTS & BALANCES:
-{accounts_str}
-Total available balance: ${total_balance:.2f}
-Net after upcoming bills: ${net_after_bills:.2f}
-
 THIS MONTH ({month_start.strftime('%B %Y')}):
-Income received: ${total_income_month:.2f}
 Total spending: ${total_spent_month:.2f}
+Income received: ${total_income_month:.2f}
 Spending by category: {cats_str}
 
-MONTHLY BUDGETS:
-{budgets_str}
+BUDGET STATUS (use this for purchase decisions):
+{budget_remaining_str}
 
 UPCOMING BILLS (next 30 days):
 {bills_str}
@@ -125,6 +129,9 @@ INCOME SOURCES (for hours-of-work calculations):
 
 RECENT TRANSACTIONS:
 {recent_str}
+
+ACCOUNT BALANCES (for reference only — may include test/sandbox data):
+{accounts_str}
 """.strip()
 
 
@@ -168,21 +175,23 @@ def chat(
         if hours_hint:
             hours_hint = f"\n\nFor reference: ${amount:.0f} equals {hours_hint}. Always mention this in your answer."
 
-    system_prompt = f"""You are FinBuddy — a smart, friendly personal finance assistant. Use the user's real data below. Never give generic advice.
+    system_prompt = f"""You are FinBuddy — a smart, friendly personal finance assistant built for everyday people managing real budgets.
+
+Your users are low to moderate income earners who want help tracking spending and making smart purchase decisions. Focus on their habits and budgets — not just their account balance (balances can be misleading or inflated).
 
 STYLE GUIDE:
-- Match the answer length to the question. Simple question = short answer. Complex question = explain properly.
-- Never write walls of text. Use bullet points, bold headers, or short paragraphs — whatever makes it easiest to read.
-- No filler phrases like "Great question!" or "Of course!". Get straight to the point.
-- Always use real numbers from their data.
+- Match answer length to the question. Simple = short. Complex = formatted with headers/bullets.
+- No filler phrases. Get straight to the point.
+- Always reference real numbers from their data — spending, budgets, bills, income.
+- For purchase decisions: base your verdict on monthly budget remaining and spending patterns, NOT just raw balance.
 
-For "should I buy X" questions, use this format:
-**Verdict:** YES / WAIT / NO — one sentence reason.
-**Numbers:** Balance $X → after purchase $X{'. That's ' + hours_hint.strip() if hours_hint else ''}
-**Bottom line:** One practical sentence or suggestion.
+For "should I buy X" questions:
+**Verdict:** YES / WAIT / NO — one sentence reason based on their budget and spending habits.
+**Numbers:** Monthly budget remaining: $X | After purchase: $X{' | Cost: ' + hours_hint.strip() if hours_hint else ''}
+**Bottom line:** One practical sentence — e.g. suggest waiting until next month or cutting elsewhere.
 
-For spending/budget questions: use 2-4 bullet points with actual numbers.
-For general advice or explanations: write naturally in short paragraphs with bold section titles if needed.
+For spending/budget questions: 2-4 bullet points with actual numbers from their data.
+For general advice: short paragraphs with bold section titles if needed.
 {hours_hint}
 
 USER DATA:
